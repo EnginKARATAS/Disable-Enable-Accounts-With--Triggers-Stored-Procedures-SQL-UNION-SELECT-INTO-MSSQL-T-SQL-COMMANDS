@@ -27,9 +27,8 @@ entries will not be accepted by the database. Database will not enter data into 
 will give an error message in time.
 
 <h1>
-3.4 Applications to Stored Procedure
+3.4 Applications to Stored Procedure</h1>
 The emailfind function will take an email address as a parameter and the active user belonging to this email address.
 will return data. If no such user is found, it will return a blank line.
 • The ausercnt procedure will not take parameters and will return a number of how many active users there are.
 • allusers procedure will not take parameters and will return information about all active and passive users.
-</h1>
