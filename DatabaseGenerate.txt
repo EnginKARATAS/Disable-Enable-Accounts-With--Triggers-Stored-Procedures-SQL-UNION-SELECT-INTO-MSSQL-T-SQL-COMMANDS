@@ -1,0 +1,35 @@
+use [master]
+GO
+IF ((select COUNT(*) from sys.databases where name='Odev') > 0)
+begin
+Drop Database Odev;
+end
+
+Create Database Odev;
+go
+
+use Odev;
+go
+-------------------------------------------------------------------------------------
+Create table Activeusers
+(
+email nvarchar(50) primary key,
+isim nvarchar(50) not null,
+soyisim nvarchar(50) not null
+);
+
+create table Passiveusers
+(
+email nvarchar(50) primary key,
+isim nvarchar(50) not null,
+soyisim nvarchar(50) not null
+);
+
+create table [Logs]
+(
+LogID int identity(1,1) primary key,
+kullanici nvarchar(50) not null,
+durum nvarchar(100) not null,
+tarih date not null
+);
+go

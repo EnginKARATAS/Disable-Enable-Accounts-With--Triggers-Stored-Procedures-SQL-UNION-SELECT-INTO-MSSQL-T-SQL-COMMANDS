@@ -1,0 +1,94 @@
+
+									--Functions
+									
+--emailfind function
+
+create function emailfind(@email varchar(40)) returns table
+as
+return(select * from dbo.Activeusers where email = @email)
+
+/*For example
+select * from dbo.emailfind('enginkaratas99@gmail.com')
+*/
+
+									--Procedures
+
+--auserent procedure
+
+create procedure auserent
+as 
+begin
+select COUNT(email) from dbo.Activeusers
+end
+
+/*For example
+exec auserent
+*/
+
+
+
+--allusers procedure
+alter procedure allusers 
+@activeusers int output,
+@passiveusers int output
+
+as 
+begin
+ 
+select @activeusers = COUNT(email) from dbo.Activeusers
+select @passiveusers = COUNT(email) from dbo.Passiveusers
+ 
+end
+
+/*For example
+declare @passive int
+declare @active int
+declare @entireUsers int 
+
+exec allusers @passive output, @active output;
+
+set @entireUsers = @active + @passive
+print @entireUsers
+*/
+
+									--Triggers
+									
+--TG_ReturntoPassiveUser: when a user deleted in dbo.Activeusers insert this user to from dbo.Passive
+create trigger TG_ReturnPassiveUser on Activeusers
+After delete 
+as 
+begin
+ declare @email nvarchar(50)
+ declare @isim nvarchar(50)
+ declare @soyisim nvarchar(50)
+
+ select @email = email		from deleted 
+ select @isim = isim		from deleted 
+ select @soyisim = soyisim  from deleted 
+ insert into Passiveusers values (@email,@isim,@soyisim)
+ insert into dbo.Logs values (@email,'A user account blocked Person:' + @isim + ' ' + @soyisim, GETDATE())
+end
+
+/*For example
+delete from Activeusers where email = 'enginkaratas99@gmail.com'
+*/
+
+--TG_ReturnActiveUser: when a user deleted in dbo.Passiveusers insert this user to from dbo.Activeusers
+create trigger TG_ReturnActiveUser on Passiveusers
+After delete 
+as 
+begin
+ declare @email nvarchar(50)
+ declare @isim nvarchar(50)
+ declare @soyisim nvarchar(50)
+
+ select @email = email		from deleted 
+ select @isim = isim		from deleted 
+ select @soyisim = soyisim  from deleted 
+ insert into Passiveusers values (@email,@isim,@soyisim)
+ insert into dbo.Logs values (@email, 'Turning back to our site. Person: ' + @isim + ' ' +  @soyisim , GETDATE())
+end
+
+/*For example 
+delete from Passiveusers where email = 'enginkaratas99@gmail.com'
+*/
